@@ -7,7 +7,7 @@ body {
   height: 50vh;
   flex-direction: column;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 .timer-container {
