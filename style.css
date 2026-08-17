@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+body {
+  font-family: "Google Sans", sans-serif;
+  background-color: #d6dce4;
+  display: flex;
+  margin: 0;
+  height: 50vh;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.timer-container {
+    text-align: center;
+    padding: 20px;
+}
+
+#countdownDisplay {
+    font-size: 5em;
+    font-weight: bold;
+    color: #333;
+    height: 1em;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#word-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 25vh;
+    width: 15vw;
+    overflow-y: auto;
+    font-size: 1rem;
+    background-color: #c5bebe;
+    margin-top: 20px;
+}
+
+#word-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 1rem;
+    text-align: left;
+}
+
+#score-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 1rem;
+    text-align: left;
+    color:#0b4117
+}
+
+#list-container {
+    display: flex;
+}
+
+#score-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-weight: bold;
+}
+
+#letter {
+    font-size: 5em;
+    font-weight: bold;
+    color: #18ce18;
+    height: 0.25em;
+    margin: 0.25em
+}
+
+#result {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #000000;
+    height: 0.25em;
+    margin:2em;
+}
+
+#start-button {
+    margin-bottom: 1em;
+    border-radius: 8px;
+    padding: 10px 20px;
+    background-color: rgb(52, 126, 175);
+    color: #d6dce4;
+    cursor: pointer;
+    font-size: 16px;
+    border:none;
+}

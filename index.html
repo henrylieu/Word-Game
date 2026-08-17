@@ -11,9 +11,33 @@
 
 <body>
 
-    <div id="timer">
+    <header class="timer-container"> <!--timer container-->
+  
+  <section id="countdownDisplay"></section>
+    </header>
+    <section id="score-container"> <!--score container-->
+        <p id="highscore">High Score: 0</p>
+        <p id="score">Score: 0</p>
+        <h2 id="letter"></h2>
+        <p id="result"></p>
+        <button id="start-button" onclick="startTimer()" aria-label="Start timer">Start</button>
+    </section>
+
+<main>
+    <form id="word-form" onsubmit="event.preventDefault(); getInput();clearInput();"> <!--word submission form-->
+        <input type="text" id="word-input" name="word-input" placeholder="Enter a word" required disabled>
+    
+    </form>
+
+     <section id="word-list-container"> <!--word list container-->
+        <h2>Words:</h2>
+        <div id="list-container">
+        <ul id="word-list"></ul>
+        <u1 id="score-list"></u1>
+        </div>
         
-    </div>
+    </section>
+</main>
 
 </body>
 
