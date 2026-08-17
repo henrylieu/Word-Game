@@ -16,7 +16,7 @@ body {
 }
 
 #countdownDisplay {
-    font-size: 5em;
+    font-size: 10vh;
     font-weight: bold;
     color: #333;
     height: 1em;
@@ -34,10 +34,10 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 25vh;
-    width: 15vw;
+    height: 30vh;
+    width: 256px;
     overflow-y: auto;
-    font-size: 1rem;
+    font-size: 1.5vh;
     background-color: #c5bebe;
     margin-top: 20px;
 }
@@ -78,7 +78,7 @@ main {
 }
 
 #letter {
-    font-size: 5em;
+    font-size: 5vh;
     font-weight: bold;
     color: #18ce18;
     height: 0.25em;
@@ -86,11 +86,11 @@ main {
 }
 
 #result {
-    font-size: 1.5em;
+    font-size: 2vh;
     font-weight: bold;
     color: #000000;
     height: 0.25em;
-    margin:2em;
+    margin:5vh;
 }
 
 #start-button {
