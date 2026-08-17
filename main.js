@@ -10,9 +10,9 @@ async function fetchWordList() {
     const response = await fetch('words_dictionary.json');
     const data = await response.json();
     wordSet = new Set(Object.keys(data).map(word => word.toLowerCase()));
-        document.getElementById("word-input").disabled = false; // enable input after wordlist is fetched
+        
 }
-document.getElementById("word-input").disabled = true; // disable input until wordlist is fetched
+
 fetchWordList();
 
 function startTimer() {
