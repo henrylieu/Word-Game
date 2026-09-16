@@ -16,6 +16,7 @@ let playerName = "";
 let isHost = false;
 let isMultiplayer = false;
 let currentRoomCode = "";
+let roundInProgress = false;
 
 
 
@@ -71,6 +72,7 @@ function startTimer() {
 function localStartTimer(letter) {
 
     currentLetter = letter;
+    roundInProgress = true;
     document.getElementById("letter").textContent = currentLetter;
 
     resetList(); // Clear the word list and score list when the timer starts
@@ -88,6 +90,7 @@ function localStartTimer(letter) {
             clearInput(); // Clear the input field when the timer ends
             endGame();
             resetGame();
+
 
         }
 
@@ -111,6 +114,21 @@ function updateTimer() {
 
 function endGame() {
     document.getElementById("countdownDisplay").textContent = "Time's up!";
+
+    if (isMultiplayer && isHost) {
+        const state = currentRoom.presenceState();
+        const players = Object.values(state).flat();
+
+        const winner = players.reduce((highest, p) =>
+            p.score > highest.score ? p : highest
+            , players[0]);
+
+        currentRoom.send({
+            type: "broadcast",
+            event: "game-over",
+            payload: { winnerName: winner.name, winnerScore: winner.score }
+        });
+    }
 }
 
 function clearInput() {
@@ -127,8 +145,10 @@ function resetGame() {
     document.getElementById("result").textContent = ""; // Clear the result display
     score = 0;
     timeLeft = time; // Reset the timer to 30 seconds
+    roundInProgress = false;
 }
 function localEndRound() {
+    roundInProgress = false;
     document.getElementById("countdownDisplay").textContent = "";
     clearInput();
     resetList();
@@ -150,6 +170,10 @@ function updateScore() {
     if (score > highscore) {
         highscore = score;
         document.getElementById("highscore").textContent = "High Score: " + highscore;
+    }
+
+    if (isMultiplayer && currentRoom) {
+        currentRoom.track({ name: playerName, score: score });
     }
 }
 
@@ -219,19 +243,45 @@ function joinChannel(roomCode) {
     });
 
     currentRoom
+        // Handle the "sync" event to update the player list when a new player joins
         .on("presence", { event: "sync" }, () => {
             updatePlayerList();
         })
+        // Handle the "leave" event to detect when the host leaves the room
         .on("presence", { event: "leave" }, ({ key }) => {
             if (key === "Host" && !isHost) {
                 hostDisconnected();
             }
         })
+        // Handle the "round-start" event to start the round for all players
         .on("broadcast", { event: "round-start" }, (payload) => {
             localStartTimer(payload.payload.letter);
         })
+        // Handle the "round-end" event to end the round for all players
         .on("broadcast", { event: "round-end" }, () => {
             localEndRound();
+        })
+        // Handle the "game-over" event to announce the winner
+        .on("broadcast", { event: "game-over" }, (payload) => {
+            announceWinner(payload.payload.winnerName, payload.payload.winnerScore);
+        })
+        // Handle the "game-state" event to synchronize the game state for new players
+        .on("presence", { event: "sync" }, () => {
+            updatePlayerList();
+
+            if (isHost) {
+                currentRoom.send({
+                    type: "broadcast",
+                    event: "game-state",
+                    payload: { roundInProgress: roundInProgress, letter: currentLetter }
+                });
+            }
+        })
+        // Listen for that state broadcast
+        .on("broadcast", { event: "game-state" }, (payload) => {
+            if (payload.payload.roundInProgress && !roundInProgress) {
+                showWaitingForNextRound();
+            }
         })
         .subscribe(async (status) => {
             if (status === "SUBSCRIBED") {
@@ -241,8 +291,17 @@ function joinChannel(roomCode) {
 
 }
 
+function showWaitingForNextRound() {
+    document.getElementById("word-input").disabled = true;
+    document.getElementById("result").textContent = "Round in progress — waiting for the next round to start...";
+}
+
+function announceWinner(name, winningScore) {
+    document.getElementById("result").textContent = `${name} wins with ${winningScore} points!`;
+}
+
 function hostDisconnected() {
-clearInterval(timerInterval);
+    clearInterval(timerInterval);
     timerInterval = null;
 
     home();
@@ -258,12 +317,18 @@ function updatePlayerList() {
         .join("");
 }
 
+
+
 function home() {
 
     if (currentRoom) {
         currentRoom.unsubscribe();
         currentRoom = null;
     }
+
+    clearInput(); // Clear the input field when the timer ends 
+    resetList(); // Clear the word list and score list when the timer ends
+    resetGame(); // Reset the game if the timer is already running
 
     document.getElementById("welcome-container").style.display = "";
     document.getElementById("game-container").style.display = "none";
