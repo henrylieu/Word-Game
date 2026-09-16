@@ -4,40 +4,76 @@
 <head>
     <meta charset="UTF-8"> <!--set character encoding-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--set viewpoint of page-->
-    <title>Game</title> <!--set title of page-->
+    <title>Word Racer</title> <!--set title of page-->
     <link rel="stylesheet" href="style.css"> <!--associate css file with html file-->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!--include Supabase JavaScript SDK-->
     <script src="main.js" defer></script> <!--associate js file with html file-->
 </head>
 
 <body>
+    <main>
 
-    <header class="timer-container"> <!--timer container-->
-  
-  <section id="countdownDisplay"></section>
-    </header>
-    <section id="score-container"> <!--score container-->
-        <p id="highscore">High Score: 0</p>
-        <p id="score">Score: 0</p>
-        <h2 id="letter"></h2>
-        <p id="result"></p>
-        <button id="start-button" onclick="startTimer()" aria-label="Start timer">Start</button>
-    </section>
+        <button id="home-button" onclick="home()" aria-label="Go to home page">Home</button>
+        <section id="welcome-container">
+            <h1 id="title">Word Racer</h1>
 
-<main>
-    <form id="word-form" onsubmit="event.preventDefault(); getInput();clearInput();"> <!--word submission form-->
-        <input type="text" id="word-input" name="word-input" placeholder="Enter a word" required disabled>
-    
-    </form>
+            <button id="play-button" type="button" onclick="singleplayer()" aria-label="Start game">Play!</button>
+            <button id="create-button" type="button" onclick="createRoom()" aria-label="Create multiplayer room">Create
+                Room</button>
 
-     <section id="word-list-container"> <!--word list container-->
-        <h2>Words:</h2>
-        <div id="list-container">
-        <ul id="word-list"></ul>
-        <u1 id="score-list"></u1>
-        </div>
-        
-    </section>
-</main>
+            <form id="room-code-container" onsubmit="event.preventDefault(); joinRoom();">
+                <input type="text" id="code-input" name="code-input" placeholder="Enter a room code" maxlength="6" required>
+                <button id="join-button" type="button" onclick="joinRoom()"
+                    aria-label="Join multiplayer room">Join</button>
+                <p id="code-error"></p>
+
+
+            </form>
+
+
+
+        </section>
+
+
+        <section id="game-container" style="display:none;">
+            <header class="timer-container"> <!--timer container-->
+
+                <section id="countdownDisplay"></section>
+            </header>
+            <section id="score-container"> <!--score container-->
+                <p id="highscore">High Score: 0</p>
+                <p id="score">Score: 0</p>
+                <h2 id="letter"></h2>
+                <p id="result"></p>
+                <button id="start-button" onclick="startTimer()" aria-label="Start timer">Start</button>
+            </section>
+
+
+
+
+            <form id="word-form" onsubmit="event.preventDefault(); getInput();clearInput();">
+                <!--word submission form-->
+                <input type="text" id="word-input" name="word-input" placeholder="Enter a word" required disabled>
+
+            </form>
+
+            <section id="lobby-container"> <!--lobby container-->
+                <h3 id="lobby-code">Code: </h3>
+                <div id="list-container">
+                    <ul id="player-list"></ul>
+                </div>
+
+            </section>
+
+            <section id="word-list-container"> <!--word list container-->
+                <h3>Words Entered</h3>
+                <div id="list-container">
+                    <ul id="word-list"></ul>
+                    <ul id="score-list"></ul>
+                </div>
+
+            </section>
+    </main>
 
 </body>
 
