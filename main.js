@@ -238,6 +238,8 @@ function joinRoom() {
 }
 
 function joinChannel(roomCode) {
+    let hostLeaveTimeout = null;
+
     currentRoom = supabaseClient.channel(`room-${roomCode}`, {
         config: { presence: { key: playerName } }
     });
@@ -250,7 +252,9 @@ function joinChannel(roomCode) {
         // Handle the "leave" event to detect when the host leaves the room
         .on("presence", { event: "leave" }, ({ key }) => {
             if (key === "Host" && !isHost) {
-                hostDisconnected();
+                hostLeaveTimeout = setTimeout(() => {
+                    hostDisconnected();
+                }, 3000); // wait 3s before assuming host is really gone
             }
         })
         // Handle the "round-start" event to start the round for all players
@@ -268,6 +272,12 @@ function joinChannel(roomCode) {
         // Handle the "game-state" event to synchronize the game state for new players
         .on("presence", { event: "sync" }, () => {
             updatePlayerList();
+
+            const state = currentRoom.presenceState();
+            if (state["Host"] && hostLeaveTimeout) {
+                clearTimeout(hostLeaveTimeout);
+                hostLeaveTimeout = null;
+            }
 
             if (isHost) {
                 currentRoom.send({
@@ -326,9 +336,11 @@ function home() {
         currentRoom = null;
     }
 
+    roundInProgress = false;
     clearInput(); // Clear the input field when the timer ends 
     resetList(); // Clear the word list and score list when the timer ends
     resetGame(); // Reset the game if the timer is already running
+    document.getElementById("countdownDisplay").textContent = "";
 
     document.getElementById("welcome-container").style.display = "";
     document.getElementById("game-container").style.display = "none";
