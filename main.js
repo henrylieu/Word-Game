@@ -254,7 +254,7 @@ function joinChannel(roomCode) {
             if (key === "Host" && !isHost) {
                 hostLeaveTimeout = setTimeout(() => {
                     hostDisconnected();
-                }, 3000); // wait 3s before assuming host is really gone
+                }, 8000); // wait 3s before assuming host is really gone
             }
         })
         // Handle the "round-start" event to start the round for all players
